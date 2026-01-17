@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from django.http import HttpResponse
 
 def home(request):
-    return HttpResponse("Astro Photo Planner")
+    return render(request, "planner/home.html")
+

@@ -1,0 +1,50 @@
+{% extends "planner/base.html" %}
+
+{% block title %}Главная • Astro Photo Planner{% endblock %}
+
+{% block content %}
+<div class="p-4 p-md-5 mb-4 bg-white rounded shadow-sm">
+  <h1 class="display-6">Планировщик астрофотосъёмки</h1>
+  <p class="lead mb-3">
+    Сервис помогает выбрать оптимальные дату и время съёмки по данным погоды и астрономическим расчётам.
+  </p>
+
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">1) Локации</h5>
+          <p class="card-text">Сохраняйте координаты точек съёмки и часовой пояс.</p>
+          <button class="btn btn-outline-secondary" disabled>Скоро</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">2) Цели</h5>
+          <p class="card-text">Создавайте цели: DSO, Млечный путь и др.</p>
+          <button class="btn btn-outline-secondary" disabled>Скоро</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">3) План съёмки</h5>
+          <p class="card-text">Сервис рассчитает окна съёмки и рейтинг условий.</p>
+          <button class="btn btn-outline-secondary" disabled>Скоро</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-4">
+
+  <p class="mb-0">
+    далее продолжить тут
+  </p>
+</div>
+{% endblock %}
