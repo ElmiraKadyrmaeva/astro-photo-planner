@@ -1,0 +1,42 @@
+{% extends "planner/base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4 mb-0">Мои локации</h1>
+  <a class="btn btn-primary" href="{% url 'location_create' %}">Добавить локацию</a>
+</div>
+
+<div class="bg-white rounded shadow-sm p-3">
+  {% if locations %}
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Название</th>
+            <th>Широта</th>
+            <th>Долгота</th>
+            <th>Часовой пояс</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for loc in locations %}
+            <tr>
+              <td>{{ loc.name }}</td>
+              <td>{{ loc.latitude }}</td>
+              <td>{{ loc.longitude }}</td>
+              <td>{{ loc.timezone }}</td>
+              <td class="text-end">
+                <a class="btn btn-sm btn-outline-secondary" href="{% url 'location_edit' loc.pk %}">Редактировать</a>
+                <a class="btn btn-sm btn-outline-danger" href="{% url 'location_delete' loc.pk %}">Удалить</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="mb-0">Пока нет локаций. Добавьте первую.</p>
+  {% endif %}
+</div>
+{% endblock %}

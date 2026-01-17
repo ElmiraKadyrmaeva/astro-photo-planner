@@ -1,0 +1,43 @@
+{% extends "planner/base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4 mb-0">Планы съёмки</h1>
+  <a class="btn btn-primary" href="{% url 'plan_create' %}">Создать план</a>
+</div>
+
+<div class="bg-white rounded shadow-sm p-3">
+  {% if plans %}
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Локация</th>
+            <th>Цель</th>
+            <th>Период</th>
+            <th>Окон</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in plans %}
+            <tr>
+              <td>#{{ p.id }}</td>
+              <td>{{ p.location.name }}</td>
+              <td>{{ p.target.name }}</td>
+              <td>{{ p.date_from }} — {{ p.date_to }}</td>
+              <td>{{ p.windows_count }}</td>
+              <td class="text-end">
+                <a class="btn btn-sm btn-outline-primary" href="{% url 'plan_detail' p.pk %}">Открыть</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="mb-0">Пока нет планов. Создайте первый.</p>
+  {% endif %}
+</div>
+{% endblock %}

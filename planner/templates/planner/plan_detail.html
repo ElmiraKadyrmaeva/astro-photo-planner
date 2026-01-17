@@ -1,0 +1,35 @@
+{% extends "planner/base.html" %}
+
+{% block content %}
+<div class="bg-white rounded shadow-sm p-4">
+  <div class="d-flex justify-content-between align-items-start">
+    <div>
+      <h1 class="h4 mb-1">План #{{ plan.id }}</h1>
+      <div class="text-muted">
+        Локация: <strong>{{ plan.location.name }}</strong> •
+        Цель: <strong>{{ plan.target.name }}</strong>
+      </div>
+      <div class="text-muted">
+        Период: {{ plan.date_from }} — {{ plan.date_to }}
+      </div>
+    </div>
+
+    <a class="btn btn-outline-secondary" href="{% url 'plan_list' %}">Назад</a>
+  </div>
+
+  <hr>
+
+  <h2 class="h6">Параметры</h2>
+  <ul class="mb-0">
+    <li>Мин. высота цели: {{ plan.min_target_altitude }}°</li>
+    <li>Макс. облачность: {{ plan.max_cloud_cover }}%</li>
+    <li>Учитывать Луну: {{ plan.avoid_moon|yesno:"да,нет" }}</li>
+  </ul>
+
+  <hr>
+
+  <div class="alert alert-info mb-0">
+    На следующем шаге здесь появятся результаты расчёта: окна съёмки, рейтинг и графики.
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "planner/base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4 mb-0">Мои цели</h1>
+  <a class="btn btn-primary" href="{% url 'target_create' %}">Добавить цель</a>
+</div>
+
+<div class="bg-white rounded shadow-sm p-3">
+  {% if targets %}
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Название</th>
+            <th>Тип</th>
+            <th>RA</th>
+            <th>Dec</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in targets %}
+            <tr>
+              <td>{{ t.name }}</td>
+              <td>{{ t.get_target_type_display }}</td>
+              <td>{{ t.right_ascension|default:"—" }}</td>
+              <td>{{ t.declination|default:"—" }}</td>
+              <td class="text-end">
+                <a class="btn btn-sm btn-outline-secondary" href="{% url 'target_edit' t.pk %}">Редактировать</a>
+                <a class="btn btn-sm btn-outline-danger" href="{% url 'target_delete' t.pk %}">Удалить</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="mb-0">Пока нет целей. Добавьте первую.</p>
+  {% endif %}
+</div>
+{% endblock %}
