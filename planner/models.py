@@ -214,3 +214,23 @@ class AstroWindow(models.Model):
 
     def __str__(self) -> str:
         return f"Окно {self.start_time} — {self.end_time} (score={self.score})"
+
+class PlanHourScore(models.Model):
+    plan = models.ForeignKey(
+        "SessionRequest",
+        on_delete=models.CASCADE,
+        related_name="hour_scores",
+    )
+    timestamp = models.DateTimeField(db_index=True)
+    score = models.FloatField()
+    cloud_cover = models.IntegerField()
+    moon_illumination = models.FloatField()
+    target_altitude = models.FloatField()
+    is_astronomical_dark = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ("plan", "timestamp")
+        ordering = ["timestamp"]
+
+    def __str__(self):
+        return f"{self.plan_id} {self.timestamp} score={self.score:.1f}"

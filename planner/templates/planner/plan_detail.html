@@ -27,7 +27,7 @@
   <hr>
 
   <h2 class="h6">Параметры</h2>
-  <ul>
+  <ul class="mb-0">
     <li>Мин. высота цели: {{ plan.min_target_altitude }}°</li>
     <li>Макс. облачность: {{ plan.max_cloud_cover }}%</li>
     <li>Учитывать Луну: {{ plan.avoid_moon|yesno:"да,нет" }}</li>
@@ -35,7 +35,7 @@
 
   <hr>
 
-  <h2 class="h6">Окна съёмки (результат расчёта)</h2>
+  <h2 class="h6">Окна съёмки</h2>
 
   {% if windows %}
     <div class="table-responsive">
@@ -47,19 +47,19 @@
             <th>Score</th>
             <th>Облачность</th>
             <th>Луна</th>
-            <th>Макс. высота цели</th>
-            <th>Астрономическая ночь</th>
+            <th>Макс. высота</th>
+            <th>Темно</th>
           </tr>
         </thead>
         <tbody>
           {% for w in windows %}
-            <tr>
+            <tr class="{% if w.score >= 80 %}table-success{% elif w.score >= 65 %}table-warning{% else %}table-light{% endif %}">
               <td>{{ w.start_time }}</td>
               <td>{{ w.end_time }}</td>
-              <td><strong>{{ w.score }}</strong></td>
+              <td><strong>{{ w.score|floatformat:1 }}</strong></td>
               <td>{{ w.avg_cloud_cover }}%</td>
-              <td>{{ w.moon_illumination }}</td>
-              <td>{{ w.max_target_altitude }}°</td>
+              <td>{{ w.moon_illumination|floatformat:2 }}</td>
+              <td>{{ w.max_target_altitude|floatformat:1 }}°</td>
               <td>{{ w.is_astronomical_dark|yesno:"да,нет" }}</td>
             </tr>
           {% endfor %}
@@ -67,37 +67,79 @@
       </table>
     </div>
   {% else %}
-    <div class="alert alert-warning mb-0">
-      Пока нет результатов. Нажми <strong>«Рассчитать»</strong>.
+    <div class="alert alert-warning">
+      Подходящих <strong>окон</strong> не найдено по заданным фильтрам.
+      Ниже показаны <strong>лучшие часы</strong> по score (это помогает понять почему окон нет).
     </div>
+  {% endif %}
+
+  <h2 class="h6 mt-4">Лучшие часы (Top-10)</h2>
+
+  {% if hours_best %}
+    <div class="table-responsive">
+      <table class="table table-sm align-middle">
+        <thead>
+          <tr>
+            <th>Время (UTC)</th>
+            <th>Score</th>
+            <th>Облачность</th>
+            <th>Высота цели</th>
+            <th>Луна</th>
+            <th>Темно</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for h in hours_best %}
+            <tr class="{% if h.score >= 80 %}table-success{% elif h.score >= 65 %}table-warning{% else %}table-light{% endif %}">
+              <td>{{ h.timestamp }}</td>
+              <td><strong>{{ h.score|floatformat:1 }}</strong></td>
+              <td>{{ h.cloud_cover }}%</td>
+              <td>{{ h.target_altitude|floatformat:1 }}°</td>
+              <td>{{ h.moon_illumination|floatformat:2 }}</td>
+              <td>{{ h.is_astronomical_dark|yesno:"да,нет" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="text-muted">Нет почасовых данных. Нажми «Рассчитать».</div>
   {% endif %}
 
   <hr>
 
-  <h2 class="h6">График облачности (из прогноза)</h2>
+  <h2 class="h6">Графики</h2>
   {% if chart_labels %}
-    <canvas id="cloudChart" height="90"></canvas>
+    <div class="mb-3">
+      <canvas id="scoreChart" height="90"></canvas>
+    </div>
   {% else %}
-    <div class="text-muted">Нет данных прогноза. Нажми «Рассчитать».</div>
+    <div class="text-muted">Нет данных для графиков. Нажми «Рассчитать».</div>
   {% endif %}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
   const labels = {{ chart_labels|safe }};
+  const scores = {{ chart_scores|safe }};
   const clouds = {{ chart_clouds|safe }};
 
-  const ctx = document.getElementById('cloudChart');
+  const ctx = document.getElementById('scoreChart');
   if (ctx && labels.length > 0) {
     new Chart(ctx, {
       type: 'line',
       data: {
         labels: labels,
-        datasets: [{
-          label: 'Облачность %',
-          data: clouds,
-          tension: 0.2
-        }]
+        datasets: [
+          { label: 'Score', data: scores, tension: 0.25, yAxisID: 'y' },
+          { label: 'Облачность %', data: clouds, tension: 0.25, yAxisID: 'y1' }
+        ]
+      },
+      options: {
+        scales: {
+          y: { beginAtZero: true, max: 100 },
+          y1: { beginAtZero: true, max: 100, position: 'right', grid: { drawOnChartArea: false } }
+        }
       }
     });
   }

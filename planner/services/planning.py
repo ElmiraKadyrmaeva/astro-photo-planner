@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from django.db import transaction
 from django.utils import timezone
 
-from planner.models import AstroWindow, ForecastHour, SessionRequest
+from planner.models import AstroWindow, ForecastHour, SessionRequest, PlanHourScore
 from planner.services.astro_calc import compute_hour_astro
 from planner.services.open_meteo import fetch_and_cache_forecast
 
@@ -166,5 +166,20 @@ def run_planning(plan: SessionRequest) -> list[HourScore]:
     windows = _merge_to_windows(plan, good)
     if windows:
         AstroWindow.objects.bulk_create(windows)
+
+    # Сохраняем почасовые score
+    PlanHourScore.objects.filter(plan=plan).delete()
+    PlanHourScore.objects.bulk_create([
+        PlanHourScore(
+            plan=plan,
+            timestamp=hs.timestamp,
+            score=hs.score,
+            cloud_cover=hs.cloud_cover,
+            moon_illumination=hs.moon_illumination,
+            target_altitude=hs.target_alt,
+            is_astronomical_dark=hs.is_dark,
+        )
+        for hs in hour_scores
+    ])
 
     return hour_scores

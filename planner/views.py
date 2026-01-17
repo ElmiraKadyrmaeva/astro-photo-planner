@@ -166,17 +166,16 @@ class PlanDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         plan = self.object
 
-        # показываем то, что уже сохранено после нажатия "Рассчитать"
+        # Окна съёмки
         context["windows"] = plan.astro_windows.all().order_by("-score", "start_time")
 
-        # график облачности строим из кэша ForecastHour
-        forecasts = plan.location.forecast_hours.filter(
-            timestamp__date__gte=plan.date_from,
-            timestamp__date__lte=plan.date_to,
-        ).order_by("timestamp")
+        # Почасовые данные (после нажатия "Рассчитать")
+        hours = plan.hour_scores.all().order_by("timestamp")
+        context["hours_best"] = plan.hour_scores.all().order_by("-score", "timestamp")[:10]
 
-        context["chart_labels"] = [f.timestamp.strftime("%Y-%m-%d %H:%M") for f in forecasts]
-        context["chart_clouds"] = [f.cloud_cover for f in forecasts]
+        context["chart_labels"] = [h.timestamp.strftime("%Y-%m-%d %H:%M") for h in hours]
+        context["chart_scores"] = [round(h.score, 2) for h in hours]
+        context["chart_clouds"] = [h.cloud_cover for h in hours]
 
         return context
 
