@@ -14,13 +14,20 @@
       </div>
     </div>
 
-    <a class="btn btn-outline-secondary" href="{% url 'plan_list' %}">Назад</a>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-secondary" href="{% url 'plan_list' %}">Назад</a>
+
+      <form method="post" action="{% url 'plan_run' plan.pk %}">
+        {% csrf_token %}
+        <button class="btn btn-primary" type="submit">Рассчитать</button>
+      </form>
+    </div>
   </div>
 
   <hr>
 
   <h2 class="h6">Параметры</h2>
-  <ul class="mb-0">
+  <ul>
     <li>Мин. высота цели: {{ plan.min_target_altitude }}°</li>
     <li>Макс. облачность: {{ plan.max_cloud_cover }}%</li>
     <li>Учитывать Луну: {{ plan.avoid_moon|yesno:"да,нет" }}</li>
@@ -28,8 +35,71 @@
 
   <hr>
 
-  <div class="alert alert-info mb-0">
-    На следующем шаге здесь появятся результаты расчёта: окна съёмки, рейтинг и графики.
-  </div>
+  <h2 class="h6">Окна съёмки (результат расчёта)</h2>
+
+  {% if windows %}
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>Начало</th>
+            <th>Конец</th>
+            <th>Score</th>
+            <th>Облачность</th>
+            <th>Луна</th>
+            <th>Макс. высота цели</th>
+            <th>Астрономическая ночь</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for w in windows %}
+            <tr>
+              <td>{{ w.start_time }}</td>
+              <td>{{ w.end_time }}</td>
+              <td><strong>{{ w.score }}</strong></td>
+              <td>{{ w.avg_cloud_cover }}%</td>
+              <td>{{ w.moon_illumination }}</td>
+              <td>{{ w.max_target_altitude }}°</td>
+              <td>{{ w.is_astronomical_dark|yesno:"да,нет" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-warning mb-0">
+      Пока нет результатов. Нажми <strong>«Рассчитать»</strong>.
+    </div>
+  {% endif %}
+
+  <hr>
+
+  <h2 class="h6">График облачности (из прогноза)</h2>
+  {% if chart_labels %}
+    <canvas id="cloudChart" height="90"></canvas>
+  {% else %}
+    <div class="text-muted">Нет данных прогноза. Нажми «Рассчитать».</div>
+  {% endif %}
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  const labels = {{ chart_labels|safe }};
+  const clouds = {{ chart_clouds|safe }};
+
+  const ctx = document.getElementById('cloudChart');
+  if (ctx && labels.length > 0) {
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Облачность %',
+          data: clouds,
+          tension: 0.2
+        }]
+      }
+    });
+  }
+</script>
 {% endblock %}

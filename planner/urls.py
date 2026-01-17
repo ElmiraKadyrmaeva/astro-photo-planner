@@ -13,6 +13,7 @@ from .views import (
     PlanListView,
     PlanCreateView,
     PlanDetailView,
+    PlanRunView,
 )
 
 urlpatterns = [
@@ -31,4 +32,5 @@ urlpatterns = [
     path("plans/", PlanListView.as_view(), name="plan_list"),
     path("plans/create/", PlanCreateView.as_view(), name="plan_create"),
     path("plans/<int:pk>/", PlanDetailView.as_view(), name="plan_detail"),
+    path("plans/<int:pk>/run/", PlanRunView.as_view(), name="plan_run"),
 ]

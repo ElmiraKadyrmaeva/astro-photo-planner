@@ -1,7 +1,9 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -12,6 +14,7 @@ from django.views.generic import (
 
 from .forms import LocationForm, TargetForm, SessionRequestForm
 from .models import Location, Target, SessionRequest
+from .services.planning import run_planning
 
 
 def home(request):
@@ -24,7 +27,6 @@ class LocationListView(LoginRequiredMixin, ListView):
     context_object_name = "locations"
 
     def get_queryset(self):
-        # показываем только локации владельца
         return Location.objects.filter(owner=self.request.user).order_by("-created_at")
 
 
@@ -138,7 +140,6 @@ class PlanCreateView(LoginRequiredMixin, CreateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        # показываем только локации/цели текущего пользователя
         form.fields["location"].queryset = Location.objects.filter(owner=self.request.user)
         form.fields["target"].queryset = Target.objects.filter(owner=self.request.user)
         return form
@@ -160,3 +161,41 @@ class PlanDetailView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         return SessionRequest.objects.filter(user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        plan = self.object
+
+        # показываем то, что уже сохранено после нажатия "Рассчитать"
+        context["windows"] = plan.astro_windows.all().order_by("-score", "start_time")
+
+        # график облачности строим из кэша ForecastHour
+        forecasts = plan.location.forecast_hours.filter(
+            timestamp__date__gte=plan.date_from,
+            timestamp__date__lte=plan.date_to,
+        ).order_by("timestamp")
+
+        context["chart_labels"] = [f.timestamp.strftime("%Y-%m-%d %H:%M") for f in forecasts]
+        context["chart_clouds"] = [f.cloud_cover for f in forecasts]
+
+        return context
+
+
+class PlanRunView(LoginRequiredMixin, View):
+    """
+    Запуск расчёта по кнопке
+    Делает запрос к Open-Meteo, считает AstroPy, сохраняет окна AstroWindow
+    """
+    def post(self, request, pk: int):
+        plan = SessionRequest.objects.filter(user=request.user, pk=pk).first()
+        if not plan:
+            messages.error(request, "План не найден.")
+            return redirect("plan_list")
+
+        try:
+            run_planning(plan)
+            messages.success(request, "Расчёт выполнен. Окна съёмки обновлены.")
+        except Exception as e:
+            messages.error(request, f"Ошибка расчёта: {e}")
+
+        return redirect("plan_detail", pk=pk)
