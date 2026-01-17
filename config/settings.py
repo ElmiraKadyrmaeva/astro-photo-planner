@@ -29,7 +29,12 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-dev-key")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = ["elmira0890.pythonanywhere.com", "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = [
+    "elmira0890.pythonanywhere.com",
+    "www.elmira0890.pythonanywhere.com",
+    "localhost",
+    "127.0.0.1",
+]
 
 
 # Application definition

@@ -1,3 +1,6 @@
+from astropy.utils import iers
+iers.conf.auto_download = False
+iers.conf.use_network = False
 import datetime as dt
 from dataclasses import dataclass
 
