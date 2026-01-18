@@ -39,16 +39,13 @@
         </li>
 
         {% if user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'logout' %}">Выйти</a>
-          </li>
+          <form method="post" action="{% url 'logout' %}" class="d-inline">
+              {% csrf_token %}
+              <button class="btn btn-outline-light btn-sm">Выйти</button>
+          </form>
         {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'login' %}">Вход</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'register' %}">Регистрация</a>
-          </li>
+          <a class="nav-link" href="{% url 'login' %}">Вход</a>
+          <a class="nav-link" href="{% url 'register' %}">Регистрация</a>
         {% endif %}
       </ul>
     </div>
