@@ -1,0 +1,387 @@
+/* ===== Astro Photo Planner — theme.css (clean) ===== */
+
+/* ---------- Base tokens ---------- */
+:root{
+  --radius: 18px;
+  --shadow: 0 14px 40px rgba(0,0,0,.18);
+
+  /* light */
+  --l-bg: #f3f6ff;
+  --l-text: #0f172a;
+  --l-muted: rgba(15,23,42,.68);
+  --l-card: rgba(255,255,255,.88);
+  --l-card-border: rgba(15,23,42,.10);
+
+  /* dark */
+  --d-bg1:#050814;
+  --d-bg2:#0b1230;
+  --d-text: rgba(255,255,255,.92);
+  --d-muted: rgba(255,255,255,.70);
+  --d-card: rgba(255,255,255,.07);
+  --d-card-border: rgba(255,255,255,.14);
+
+  /* accents */
+  --accent:#7c5cff;
+  --accent-2:#34d399;
+}
+
+/* make container a bit wider */
+.container{ max-width: 1120px; }
+
+/* ---------- Theme: LIGHT ---------- */
+:root[data-theme="light"] body{
+  background:
+    radial-gradient(1200px 700px at 18% 15%, rgba(124,92,255,.10), transparent 60%),
+    radial-gradient(1000px 700px at 82% 20%, rgba(52,211,153,.10), transparent 60%),
+    radial-gradient(900px 700px at 50% 85%, rgba(15,23,42,.06), transparent 55%),
+    linear-gradient(160deg, #eef2ff, var(--l-bg));
+  color: var(--l-text);
+  min-height: 100vh;
+}
+
+:root[data-theme="light"] .navbar{
+  background: rgba(255,255,255,.75) !important;
+  border-bottom: 1px solid rgba(15,23,42,.10);
+  backdrop-filter: blur(10px);
+}
+:root[data-theme="light"] .navbar .navbar-brand,
+:root[data-theme="light"] .navbar .nav-link{
+  color: var(--l-text) !important;
+}
+:root[data-theme="light"] .navbar .nav-link{ opacity: .78; }
+:root[data-theme="light"] .navbar .nav-link:hover{ opacity: 1; }
+
+:root[data-theme="light"] .bg-white,
+:root[data-theme="light"] .card{
+  background: var(--l-card) !important;
+  border: 1px solid var(--l-card-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+:root[data-theme="light"] .shadow-sm{ box-shadow: var(--shadow) !important; }
+
+:root[data-theme="light"] .card-title{ color: var(--l-text); }
+:root[data-theme="light"] .card-text,
+:root[data-theme="light"] label,
+:root[data-theme="light"] .form-label{
+  color: var(--l-muted);
+}
+
+:root[data-theme="light"] .table{ color: var(--l-text); }
+:root[data-theme="light"] .table thead th{
+  color: rgba(15,23,42,.72);
+}
+
+:root[data-theme="light"] .form-control,
+:root[data-theme="light"] .form-select{
+  background: #fff !important;
+  color: var(--l-text) !important;
+  border: 1px solid rgba(15,23,42,.18) !important;
+}
+:root[data-theme="light"] .form-control:focus,
+:root[data-theme="light"] .form-select:focus{
+  border-color: rgba(124,92,255,.55) !important;
+  box-shadow: 0 0 0 .2rem rgba(124,92,255,.18) !important;
+}
+
+/* ---------- Theme: DARK ---------- */
+:root[data-theme="dark"] body{
+  background:
+    radial-gradient(1200px 600px at 15% 10%, rgba(124,92,255,.22), transparent 60%),
+    radial-gradient(900px 500px at 85% 20%, rgba(52,211,153,.14), transparent 60%),
+    radial-gradient(800px 500px at 55% 85%, rgba(255,255,255,.08), transparent 55%),
+    linear-gradient(160deg, var(--d-bg1), var(--d-bg2));
+  color: var(--d-text);
+  min-height: 100vh;
+  position: relative;
+}
+
+/* star layers */
+/* star layers (more stars + milky way) */
+:root[data-theme="dark"] body::before,
+:root[data-theme="dark"] body::after{
+  content:"";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* слой со звёздами (много мелких точек) */
+:root[data-theme="dark"] body::before{
+  background:
+    radial-gradient(1px 1px at 3% 12%, rgba(255,255,255,.9) 50%, transparent 52%),
+    radial-gradient(1px 1px at 8% 72%, rgba(255,255,255,.75) 50%, transparent 52%),
+    radial-gradient(1px 1px at 14% 28%, rgba(255,255,255,.65) 50%, transparent 52%),
+    radial-gradient(1px 1px at 18% 84%, rgba(255,255,255,.85) 50%, transparent 52%),
+    radial-gradient(1px 1px at 22% 40%, rgba(255,255,255,.55) 50%, transparent 52%),
+    radial-gradient(1px 1px at 27% 15%, rgba(255,255,255,.80) 50%, transparent 52%),
+    radial-gradient(1px 1px at 33% 58%, rgba(255,255,255,.75) 50%, transparent 52%),
+    radial-gradient(1px 1px at 37% 90%, rgba(255,255,255,.60) 50%, transparent 52%),
+    radial-gradient(1px 1px at 41% 22%, rgba(255,255,255,.88) 50%, transparent 52%),
+    radial-gradient(1px 1px at 46% 68%, rgba(255,255,255,.72) 50%, transparent 52%),
+    radial-gradient(1px 1px at 52% 12%, rgba(255,255,255,.55) 50%, transparent 52%),
+    radial-gradient(1px 1px at 58% 35%, rgba(255,255,255,.82) 50%, transparent 52%),
+    radial-gradient(1px 1px at 61% 78%, rgba(255,255,255,.64) 50%, transparent 52%),
+    radial-gradient(1px 1px at 66% 52%, rgba(255,255,255,.76) 50%, transparent 52%),
+    radial-gradient(1px 1px at 71% 8%, rgba(255,255,255,.90) 50%, transparent 52%),
+    radial-gradient(1px 1px at 76% 88%, rgba(255,255,255,.58) 50%, transparent 52%),
+    radial-gradient(1px 1px at 82% 26%, rgba(255,255,255,.78) 50%, transparent 52%),
+    radial-gradient(1px 1px at 86% 62%, rgba(255,255,255,.66) 50%, transparent 52%),
+    radial-gradient(1px 1px at 92% 14%, rgba(255,255,255,.86) 50%, transparent 52%),
+    radial-gradient(1px 1px at 96% 74%, rgba(255,255,255,.60) 50%, transparent 52%),
+
+    /* ещё слой мелких “пылинок” */
+    radial-gradient(1px 1px at 12% 55%, rgba(255,255,255,.35) 50%, transparent 52%),
+    radial-gradient(1px 1px at 29% 73%, rgba(255,255,255,.30) 50%, transparent 52%),
+    radial-gradient(1px 1px at 47% 47%, rgba(255,255,255,.28) 50%, transparent 52%),
+    radial-gradient(1px 1px at 63% 66%, rgba(255,255,255,.25) 50%, transparent 52%),
+    radial-gradient(1px 1px at 79% 44%, rgba(255,255,255,.30) 50%, transparent 52%),
+    radial-gradient(1px 1px at 88% 86%, rgba(255,255,255,.25) 50%, transparent 52%);
+
+  opacity: .9;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,.12));
+}
+
+/* слой “млечного пути” (светлая полоса/облако) */
+:root[data-theme="dark"] body::after{
+  background:
+    /* мягкая светлая диагональная полоса */
+    linear-gradient(115deg,
+      transparent 0%,
+      rgba(255,255,255,.06) 35%,
+      rgba(255,255,255,.10) 45%,
+      rgba(255,255,255,.06) 55%,
+      transparent 70%
+    ),
+
+    /* “облака” галактики */
+    radial-gradient(900px 380px at 35% 55%, rgba(124,92,255,.22), transparent 65%),
+    radial-gradient(850px 330px at 70% 35%, rgba(52,211,153,.14), transparent 65%),
+    radial-gradient(700px 260px at 55% 70%, rgba(255,255,255,.08), transparent 60%),
+
+    /* чуть “пыли” вокруг */
+    radial-gradient(600px 220px at 40% 50%, rgba(255,255,255,.06), transparent 70%),
+    radial-gradient(520px 200px at 72% 42%, rgba(255,255,255,.05), transparent 70%);
+
+  opacity: .95;
+  mix-blend-mode: screen; /* делает “светящиеся” туманности красивее */
+}
+
+
+/* keep content above stars */
+:root[data-theme="dark"] nav,
+:root[data-theme="dark"] main,
+:root[data-theme="dark"] footer{
+  position: relative;
+  z-index: 1;
+}
+
+:root[data-theme="dark"] .navbar{
+  background: rgba(10,14,30,.75) !important;
+  border-bottom: 1px solid rgba(255,255,255,.10);
+  backdrop-filter: blur(10px);
+}
+:root[data-theme="dark"] .navbar .navbar-brand{
+  color: var(--d-text) !important;
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+:root[data-theme="dark"] .navbar .nav-link{
+  color: var(--d-muted) !important;
+}
+:root[data-theme="dark"] .navbar .nav-link:hover{
+  color: var(--d-text) !important;
+}
+
+/* glass cards */
+:root[data-theme="dark"] .bg-white,
+:root[data-theme="dark"] .card{
+  background: var(--d-card) !important;
+  border: 1px solid var(--d-card-border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+:root[data-theme="dark"] .shadow-sm{ box-shadow: 0 14px 40px rgba(0,0,0,.35) !important; }
+
+:root[data-theme="dark"] .card-title{ color: var(--d-text); }
+:root[data-theme="dark"] .card-text,
+:root[data-theme="dark"] label,
+:root[data-theme="dark"] .form-label{
+  color: var(--d-muted) !important;
+}
+
+/* IMPORTANT: tables in dark */
+:root[data-theme="dark"] .table{
+  color: var(--d-text) !important;
+}
+:root[data-theme="dark"] .table thead th{
+  color: rgba(255,255,255,.78) !important;
+  border-bottom-color: rgba(255,255,255,.18) !important;
+}
+:root[data-theme="dark"] .table td,
+:root[data-theme="dark"] .table th{
+  border-top-color: rgba(255,255,255,.10) !important;
+}
+
+/* IMPORTANT: buttons in dark (Open/Edit etc.) */
+:root[data-theme="dark"] .btn-outline-primary{
+  border-color: rgba(255,255,255,.35) !important;
+  color: rgba(255,255,255,.92) !important;
+  background: rgba(255,255,255,.06) !important;
+}
+:root[data-theme="dark"] .btn-outline-primary:hover{
+  background: rgba(255,255,255,.12) !important;
+  border-color: rgba(255,255,255,.50) !important;
+}
+:root[data-theme="dark"] .btn-outline-secondary{
+  border-color: rgba(255,255,255,.28) !important;
+  color: rgba(255,255,255,.85) !important;
+}
+
+/* primary button */
+.btn-primary{
+  background: linear-gradient(135deg, var(--accent), #a78bfa) !important;
+  border: 0 !important;
+  box-shadow: 0 12px 24px rgba(124,92,255,.18);
+}
+.btn-primary:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+/* IMPORTANT: forms in dark (inputs + selects + options) */
+:root[data-theme="dark"] .form-control,
+:root[data-theme="dark"] .form-select{
+  background: rgba(255,255,255,.06) !important;
+  border: 1px solid rgba(255,255,255,.16) !important;
+  color: rgba(255,255,255,.92) !important;
+}
+:root[data-theme="dark"] .form-control::placeholder{
+  color: rgba(255,255,255,.45);
+}
+:root[data-theme="dark"] .form-control:focus,
+:root[data-theme="dark"] .form-select:focus{
+  border-color: rgba(124,92,255,.55) !important;
+  box-shadow: 0 0 0 .2rem rgba(124,92,255,.15) !important;
+}
+
+/* dropdown list is white by browser default — fix it */
+:root[data-theme="dark"] .form-select option{
+  background-color: #0b1230 !important;
+  color: rgba(255,255,255,.92) !important;
+}
+
+/* alerts */
+:root[data-theme="dark"] .alert{
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.14);
+  color: var(--d-text);
+}
+
+/* footer */
+footer{
+  border-top: 1px solid rgba(255,255,255,.10) !important;
+}
+:root[data-theme="dark"] footer{
+  background: rgba(10, 14, 30, .55) !important;
+  color: rgba(255,255,255,.68) !important;
+}
+:root[data-theme="light"] footer{
+  background: rgba(255,255,255,.75) !important;
+  color: rgba(15,23,42,.65) !important;
+}
+/* ===== Fixes: force readability on Bootstrap elements ===== */
+
+/* tables: force header background/text */
+:root[data-theme="dark"] .table thead,
+:root[data-theme="dark"] .table thead tr,
+:root[data-theme="dark"] .table thead th{
+  background: rgba(255,255,255,.06) !important;
+  color: rgba(255,255,255,.85) !important;
+}
+
+/* make table cells readable */
+:root[data-theme="dark"] .table tbody td{
+  color: rgba(255,255,255,.90) !important;
+}
+
+/* button "Открыть" / "Редактировать" etc. */
+:root[data-theme="dark"] a.btn.btn-outline-primary,
+:root[data-theme="dark"] button.btn.btn-outline-primary{
+  color: rgba(255,255,255,.92) !important;
+  border-color: rgba(255,255,255,.40) !important;
+  background: rgba(255,255,255,.08) !important;
+}
+:root[data-theme="dark"] a.btn.btn-outline-primary:hover,
+:root[data-theme="dark"] button.btn.btn-outline-primary:hover{
+  background: rgba(255,255,255,.14) !important;
+  border-color: rgba(255,255,255,.55) !important;
+}
+
+/* dropdown menu / select list: make it dark too */
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] option{
+  background-color: #0b1230 !important;
+  color: rgba(255,255,255,.92) !important;
+}
+
+/* light theme: make navbar buttons visible (Тема/Выйти) */
+:root[data-theme="light"] .navbar .btn-outline-light{
+  border-color: rgba(15,23,42,.25) !important;
+  color: rgba(15,23,42,.90) !important;
+}
+:root[data-theme="light"] .navbar .btn-outline-light:hover{
+  background: rgba(15,23,42,.06) !important;
+}
+/* ===== Dark theme: make list tables readable (Locations/Targets/Plans) ===== */
+:root[data-theme="dark"] .table{
+  --bs-table-bg: transparent !important;
+  --bs-table-color: rgba(255,255,255,.92) !important;
+  --bs-table-striped-color: rgba(255,255,255,.92) !important;
+  --bs-table-striped-bg: rgba(255,255,255,.04) !important;
+  --bs-table-hover-color: rgba(255,255,255,.92) !important;
+  --bs-table-hover-bg: rgba(255,255,255,.08) !important;
+  color: rgba(255,255,255,.92) !important;
+}
+
+:root[data-theme="dark"] .table tbody tr{
+  background: transparent !important;
+}
+
+:root[data-theme="dark"] .table tbody td,
+:root[data-theme="dark"] .table tbody th{
+  background: transparent !important;
+  color: rgba(255,255,255,.92) !important;
+}
+
+/* borders in dark */
+:root[data-theme="dark"] .table > :not(caption) > * > *{
+  border-color: rgba(255,255,255,.12) !important;
+}
+/* ===== Dark theme: plan detail header text ===== */
+:root[data-theme="dark"] .plan-meta,
+:root[data-theme="dark"] .plan-meta strong,
+:root[data-theme="dark"] .plan-meta span,
+:root[data-theme="dark"] .plan-meta p{
+  color: rgba(255,255,255,.92) !important;
+}
+
+/* ===== HOW TO USE: spacing fix ===== */
+.how-to,
+.bg-white.how-to {
+  padding: 2.25rem !important;   /* было ~1rem */
+  border-radius: 22px !important;
+}
+
+/* если внутри есть списки */
+.how-to ul,
+.how-to ol {
+  padding-left: 1.25rem;
+}
+
+/* расстояние между абзацами */
+.how-to p {
+  margin-bottom: 0.75rem;
+}

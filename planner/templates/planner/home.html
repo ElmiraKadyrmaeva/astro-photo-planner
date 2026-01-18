@@ -3,39 +3,66 @@
 {% block title %}Главная • Astro Photo Planner{% endblock %}
 
 {% block content %}
-<div class="p-4 p-md-5 mb-4 bg-white rounded shadow-sm">
+<div class="p-4 p-md-5 mb-4 bg-white rounded shadow-sm how-to">
   <h1 class="display-6">Планировщик астрофотосъёмки</h1>
   <p class="lead mb-3">
     Сервис помогает выбрать оптимальные дату и время съёмки по данным погоды и астрономическим расчётам.
   </p>
 
   <div class="row g-3">
+    <!-- ЛОКАЦИИ -->
     <div class="col-md-4">
       <div class="card h-100">
-        <div class="card-body">
+        <div class="card-body d-flex flex-column">
           <h5 class="card-title">1) Локации</h5>
           <p class="card-text">Сохраняйте координаты точек съёмки и часовой пояс.</p>
-          <button class="btn btn-outline-secondary" disabled>Скоро</button>
+
+          <div class="mt-auto">
+            {% if user.is_authenticated %}
+              <a class="btn btn-outline-primary" href="{% url 'location_list' %}">Перейти</a>
+              <a class="btn btn-primary ms-2" href="{% url 'location_create' %}">Добавить</a>
+            {% else %}
+              <a class="btn btn-primary" href="{% url 'login' %}">Войти, чтобы добавить</a>
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- ЦЕЛИ -->
     <div class="col-md-4">
       <div class="card h-100">
-        <div class="card-body">
+        <div class="card-body d-flex flex-column">
           <h5 class="card-title">2) Цели</h5>
           <p class="card-text">Создавайте цели: DSO, Млечный путь и др.</p>
-          <button class="btn btn-outline-secondary" disabled>Скоро</button>
+
+          <div class="mt-auto">
+            {% if user.is_authenticated %}
+              <a class="btn btn-outline-primary" href="{% url 'target_list' %}">Перейти</a>
+              <a class="btn btn-primary ms-2" href="{% url 'target_create' %}">Добавить</a>
+            {% else %}
+              <a class="btn btn-primary" href="{% url 'login' %}">Войти, чтобы добавить</a>
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- ПЛАНЫ -->
     <div class="col-md-4">
       <div class="card h-100">
-        <div class="card-body">
+        <div class="card-body d-flex flex-column">
           <h5 class="card-title">3) План съёмки</h5>
           <p class="card-text">Сервис рассчитает окна съёмки и рейтинг условий.</p>
-          <button class="btn btn-outline-secondary" disabled>Скоро</button>
+
+          <div class="mt-auto">
+            {% if user.is_authenticated %}
+              <a class="btn btn-outline-primary" href="{% url 'plan_list' %}">Перейти</a>
+              <a class="btn btn-primary ms-2" href="{% url 'plan_create' %}">Создать</a>
+            {% else %}
+              <a class="btn btn-primary" href="{% url 'login' %}">Войти, чтобы создать</a>
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>
@@ -43,8 +70,66 @@
 
   <hr class="my-4">
 
-  <p class="mb-0">
-    далее продолжить тут
-  </p>
+  <div class="bg-white rounded shadow-sm how-to">
+    <h2 class="h4 mb-3">Как пользоваться сервисом</h2>
+
+    <ol class="mb-4">
+      <li class="mb-2"><b>Добавьте локацию</b> - место, откуда вы снимаете (координаты + часовой пояс).</li>
+      <li class="mb-2"><b>Добавьте цель</b> - что именно хотите снять на камеру (объект в небе).</li>
+      <li class="mb-2"><b>Создайте план</b> - выберите локацию, цель и диапазон дат.</li>
+      <li class="mb-2"><b>Нажмите “Рассчитать”</b> - сервис покажет погоду и лучшие окна съёмки.</li>
+    </ol>
+
+    <h3 class="h5 mt-4">Локация: что вводить</h3>
+    <ul>
+      <li><b>Название</b> - любое удобное: “Дача”, “Гора”, “Парк у дома”.</li>
+      <li><b>Широта (Latitude)</b> - координата север/юг. Пример: <code>55.7558</code>.</li>
+      <li><b>Долгота (Longitude)</b> - координата восток/запад. Пример: <code>37.6173</code>.</li>
+      <li><b>Часовой пояс</b> - формат IANA: <code>Europe/Moscow</code>, <code>Asia/Almaty</code>, <code>Europe/Berlin</code>.</li>
+    </ul>
+    <p class="mb-4">
+      Где взять координаты: Google Maps / Яндекс Карты → нажмите на точку → скопируйте широту и долготу.
+      Часовой пояс обычно совпадает с вашим городом (можно найти по запросу “IANA timezone <i>город</i>”).
+    </p>
+
+    <h3 class="h5">Цель: что это значит</h3>
+    <ul>
+      <li><b>Название</b> - например: “M31 Andromeda”, “M42 Orion”, “Milky Way”.</li>
+      <li><b>Тип цели</b>:
+        <ul class="mb-2">
+          <li><b>Moon</b> - Луна</li>
+          <li><b>Planet</b> - планеты</li>
+          <li><b>DSO</b> - объекты глубокого неба (галактики, туманности, скопления)</li>
+          <li><b>MilkyWay</b> - Млечный путь</li>
+        </ul>
+      </li>
+      <li><b>Прямое восхождение (RA, °)</b> - “небесная долгота”, положение объекта на небе.</li>
+      <li><b>Склонение (Dec, °)</b> - “небесная широта”, положение объекта относительно небесного экватора.</li>
+    </ul>
+    <p class="mb-4">
+      Где взять RA/Dec: проще всего в Stellarium (приложение), SkySafari, на AstroBin, в Википедии или базе SIMBAD.
+      Если не знаете RA/Dec - начните с Moon/Planet/MilkyWay или возьмите данные из Stellarium.
+    </p>
+
+    <h3 class="h5">План съёмки: как заполнить</h3>
+    <ul>
+      <li><b>Локация</b> - выберите добавленную точку съёмки.</li>
+      <li><b>Цель</b> - выберите объект.</li>
+      <li><b>Начало периода / Конец периода</b> - диапазон дат, когда вы готовы снимать.</li>
+      <li><b>Мин. высота цели (°)</b> - чем выше объект, тем лучше (меньше дымки у горизонта). Для старта ставьте <b>20–30°</b>.</li>
+      <li><b>Макс. облачность (%)</b> - ограничение по облакам. Для новичка удобно <b>30–40%</b>.</li>
+      <li><b>Учитывать влияние Луны</b> - включайте для DSO (галактики/туманности), чтобы сервис предпочитал более тёмные ночи.</li>
+    </ul>
+
+    <div class="alert alert-info mt-3 mb-0">
+      Совет новичку: начните с периода 3–7 дней, Min altitude 25°, Max cloud 30–40%, “Учитывать Луну” = включено (для DSO).
+    </div>
+
+    {% if not user.is_authenticated %}
+      <div class="alert alert-secondary mt-3 mb-0">
+        Чтобы создавать локации, цели и планы - <a href="{% url 'register' %}">зарегистрируйтесь</a> или <a href="{% url 'login' %}">войдите</a>.
+      </div>
+    {% endif %}
+  </div>
 </div>
 {% endblock %}
