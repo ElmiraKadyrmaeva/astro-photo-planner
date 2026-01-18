@@ -37,6 +37,19 @@
         <li class="nav-item">
           <a class="nav-link" href="/admin/">Админка</a>
         </li>
+
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">Выйти</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Вход</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'register' %}">Регистрация</a>
+          </li>
+        {% endif %}
       </ul>
     </div>
   </div>
@@ -44,13 +57,13 @@
 
 <main class="container py-4">
     {% if messages %}
-    {% for message in messages %}
-      <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %}" role="alert">
-        {{ message }}
-      </div>
-    {% endfor %}
-  {% endif %}
-  {% block content %}{% endblock %}
+      {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %}" role="alert">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+    {% block content %}{% endblock %}
 </main>
 
 <footer class="border-top py-3 bg-white mt-auto">
