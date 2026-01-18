@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import CustomLoginView, CustomLogoutView
 from .views import (
     home,
     LocationListView,
@@ -33,7 +34,7 @@ urlpatterns = [
     path("plans/create/", PlanCreateView.as_view(), name="plan_create"),
     path("plans/<int:pk>/", PlanDetailView.as_view(), name="plan_detail"),
     path("plans/<int:pk>/run/", PlanRunView.as_view(), name="plan_run"),
-    path('register/', views.register, name='register'),  # Страница регистрации
-    path('login/', views.login_view, name='login'),      # Страница входа
-    path('logout/', views.logout_view, name='logout'),   # Страница выхода
+    path("register/", views.register, name="register"),
+    path("accounts/login/", CustomLoginView.as_view(), name="login"),
+    path("accounts/logout/", CustomLogoutView.as_view(), name="logout"),
 ]
