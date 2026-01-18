@@ -1,16 +1,13 @@
 from django.contrib import messages
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView, LogoutView
 from django.db.models import Count
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import (
-    CreateView,
-    DeleteView,
-    DetailView,
-    ListView,
-    UpdateView,
-)
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
 from .forms import LocationForm, TargetForm, SessionRequestForm
 from .models import Location, Target, SessionRequest
@@ -19,6 +16,34 @@ from .services.planning import run_planning
 
 def home(request):
     return render(request, "planner/home.html")
+
+
+def register(request):
+    """
+    Регистрация пользователя через стандартную форму Django.
+    После успешной регистрации автоматически логиним пользователя.
+    """
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  # авто-вход сразу после регистрации
+            messages.success(request, "Регистрация успешна. Добро пожаловать!")
+            return redirect("home")
+        else:
+            messages.error(request, "Исправьте ошибки в форме.")
+    else:
+        form = UserCreationForm()
+
+    return render(request, "registration/register.html", {"form": form})
+
+
+class CustomLoginView(LoginView):
+    template_name = "registration/login.html"
+
+
+class CustomLogoutView(LogoutView):
+    next_page = reverse_lazy("home")
 
 
 class LocationListView(LoginRequiredMixin, ListView):
@@ -119,6 +144,7 @@ class TargetDeleteView(LoginRequiredMixin, DeleteView):
         return Target.objects.filter(owner=self.request.user)
 
 
+
 class PlanListView(LoginRequiredMixin, ListView):
     model = SessionRequest
     template_name = "planner/plan_list.html"
@@ -166,10 +192,8 @@ class PlanDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         plan = self.object
 
-        # Окна съёмки
         context["windows"] = plan.astro_windows.all().order_by("-score", "start_time")
 
-        # Почасовые данные (после нажатия "Рассчитать")
         hours = plan.hour_scores.all().order_by("timestamp")
         context["hours_best"] = plan.hour_scores.all().order_by("-score", "timestamp")[:10]
 
@@ -182,9 +206,10 @@ class PlanDetailView(LoginRequiredMixin, DetailView):
 
 class PlanRunView(LoginRequiredMixin, View):
     """
-    Запуск расчёта по кнопке
+    Запуск расчёта по кнопке (POST)
     Делает запрос к Open-Meteo, считает AstroPy, сохраняет окна AstroWindow
     """
+
     def post(self, request, pk: int):
         plan = SessionRequest.objects.filter(user=request.user, pk=pk).first()
         if not plan:
